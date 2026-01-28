@@ -89,9 +89,14 @@ export default function Home() {
         </form>
 
         {/* Disclaimer */}
-        <p className="text-center text-white/30 text-xs font-light">
-          we don't store any of your data nor ask for your personal details
-        </p>
+        <div className="space-y-2">
+          <p className="text-center text-white/30 text-xs font-light">
+            we don't store any of your data nor ask for your personal details
+          </p>
+          <p className="text-center text-white/20 text-xs font-light">
+            v1.2
+          </p>
+        </div>
       </div>
     </main>
   );
