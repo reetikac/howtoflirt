@@ -25,6 +25,8 @@ interface RequestBody {
 }
 
 export async function POST(request: NextRequest) {
+  let personalization = DEFAULT_PERSONALIZATION;
+
   try {
     // Check if API key is configured
     if (!process.env.ANTHROPIC_API_KEY) {
@@ -36,7 +38,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body: RequestBody = await request.json();
-    const { screenshot, context, personalization = DEFAULT_PERSONALIZATION } = body;
+    const { screenshot, context, personalization: userPersonalization = DEFAULT_PERSONALIZATION } = body;
+    personalization = userPersonalization;
 
     if (!screenshot) {
       return NextResponse.json(
