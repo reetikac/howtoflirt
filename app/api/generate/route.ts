@@ -26,6 +26,15 @@ interface RequestBody {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if API key is configured
+    if (!process.env.ANTHROPIC_API_KEY) {
+      console.error('ANTHROPIC_API_KEY is not set in environment variables');
+      return NextResponse.json(
+        { error: 'API key not configured. Please set ANTHROPIC_API_KEY in Vercel environment variables.' },
+        { status: 500 }
+      );
+    }
+
     const body: RequestBody = await request.json();
     const { screenshot, context, personalization = DEFAULT_PERSONALIZATION } = body;
 
@@ -224,26 +233,20 @@ Return ONLY valid JSON in this exact format (no markdown, no code blocks):
     return NextResponse.json({ suggestions });
   } catch (error) {
     console.error('API Error:', error);
-
-    // Return fallback suggestions if API fails
-    return NextResponse.json({
-      suggestions: [
-        {
-          id: '1',
-          label: 'option 1',
-          text: 'haha okay but when are we actually meeting up? 👀',
-        },
-        {
-          id: '2',
-          label: 'option 2',
-          text: 'i like your energy. let\'s keep this going over coffee?',
-        },
-        {
-          id: '3',
-          label: 'option 3',
-          text: 'you seem really cool! would love to chat more in person',
-        },
-      ],
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      personalization: personalization,
+      hasApiKey: !!process.env.ANTHROPIC_API_KEY,
     });
+
+    // Return error response instead of fallback
+    return NextResponse.json(
+      {
+        error: 'Failed to generate suggestions. Check Vercel logs for details.',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        hasApiKey: !!process.env.ANTHROPIC_API_KEY,
+      },
+      { status: 500 }
+    );
   }
 }

@@ -81,15 +81,21 @@ export default function ChatPage() {
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to generate suggestions');
+        // Show detailed error from API
+        const errorMsg = data.error || 'Failed to generate suggestions';
+        const hasKey = data.hasApiKey !== undefined ? (data.hasApiKey ? 'API key found' : 'API key missing') : '';
+        setError(`${errorMsg} ${hasKey}`);
+        console.error('API Error:', data);
+        return;
       }
 
-      const data = await response.json();
       setSuggestions(data.suggestions);
     } catch (err) {
-      setError('Something went wrong. Try regenerating');
-      console.error(err);
+      setError('Network error. Check your connection.');
+      console.error('Request failed:', err);
     } finally {
       setIsAnalyzing(false);
     }
