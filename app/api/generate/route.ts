@@ -15,6 +15,7 @@ const DEFAULT_PERSONALIZATION = {
 
 interface RequestBody {
   screenshot: string;
+  mediaType?: string;
   context?: string;
   personalization?: {
     flirtStyle: string;
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: RequestBody = await request.json();
-    const { screenshot, context, personalization: userPersonalization = DEFAULT_PERSONALIZATION } = body;
+    const { screenshot, mediaType = 'image/jpeg', context, personalization: userPersonalization = DEFAULT_PERSONALIZATION } = body;
     personalization = userPersonalization;
 
     if (!screenshot) {
@@ -188,7 +189,7 @@ Return ONLY valid JSON in this exact format (no markdown, no code blocks):
               type: 'image',
               source: {
                 type: 'base64',
-                media_type: 'image/jpeg',
+                media_type: mediaType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp',
                 data: screenshot,
               },
             },

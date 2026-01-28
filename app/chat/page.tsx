@@ -63,14 +63,17 @@ export default function ChatPage() {
     setSuggestions(null);
 
     try {
-      // Convert screenshot to base64
+      // Extract base64 and media type from data URL
       const base64 = screenshotPreview?.split(',')[1];
+      const mediaTypeMatch = screenshotPreview?.match(/data:(image\/[a-z]+);base64/);
+      const mediaType = mediaTypeMatch ? mediaTypeMatch[1] : 'image/jpeg';
 
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           screenshot: base64,
+          mediaType: mediaType,
           context: context || undefined,
           personalization: {
             flirtStyle: personalization.flirtStyle || 'playful',
