@@ -11,7 +11,6 @@ type FlirtStyle = 'playful' | 'smooth' | 'sweet' | 'cocky' | null;
 
 interface PersonalizationData {
   userGender: Gender;
-  userAge: string;
   relationshipStage: RelationshipStage;
   flirtStyle: FlirtStyle;
   intensity: number;
@@ -33,25 +32,23 @@ const flirtStyles = [
 
 export default function PersonalizePage() {
   const router = useRouter();
-  const { setPersonalization } = usePersonalization();
+  const { personalization, setPersonalization } = usePersonalization();
 
   const [data, setData] = useState<PersonalizationData>({
-    userGender: null,
-    userAge: '',
-    relationshipStage: null,
-    flirtStyle: null,
-    intensity: 5,
+    userGender: personalization.userGender as Gender,
+    relationshipStage: personalization.relationshipStage as RelationshipStage,
+    flirtStyle: personalization.flirtStyle as FlirtStyle,
+    intensity: personalization.intensity,
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const isValid = data.userGender && data.userAge && data.relationshipStage && data.flirtStyle;
+  const isValid = data.userGender && data.relationshipStage && data.flirtStyle;
 
   const handleSubmit = () => {
     const newErrors: { [key: string]: string } = {};
 
     if (!data.userGender) newErrors.gender = 'pick your gender';
-    if (!data.userAge) newErrors.age = 'we need your age';
     if (!data.relationshipStage) newErrors.stage = 'what stage are you at?';
     if (!data.flirtStyle) newErrors.style = 'pick your vibe';
 
@@ -115,42 +112,8 @@ export default function PersonalizePage() {
             )}
           </div>
 
-          {/* Age Input */}
-          <div className="animate-slide-up" style={{ animationDelay: '200ms' }}>
-            <label className="block text-white/80 font-light mb-3">i'm ___ years old</label>
-            <input
-              type="number"
-              value={data.userAge}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value.length <= 2) {
-                  setData({ ...data, userAge: value });
-                  setErrors({ ...errors, age: '' });
-                }
-              }}
-              placeholder="18"
-              min="18"
-              max="99"
-              maxLength={2}
-              className={`
-                w-full px-6 py-4 text-base font-light text-white placeholder-white/40
-                bg-white/5 backdrop-blur-sm
-                border rounded-2xl
-                transition-all duration-200
-                focus:outline-none
-                ${errors.age
-                  ? 'border-neon-pink'
-                  : 'border-white/10 focus:border-neon-purple focus:shadow-focus hover:border-white/20'
-                }
-              `}
-            />
-            {errors.age && (
-              <p className="text-neon-pink text-sm mt-2 font-light">{errors.age}</p>
-            )}
-          </div>
-
           {/* Relationship Stage */}
-          <div className="animate-slide-up" style={{ animationDelay: '300ms' }}>
+          <div className="animate-slide-up" style={{ animationDelay: '200ms' }}>
             <label className="block text-white/80 font-light mb-3">where are you at?</label>
             <div className="grid grid-cols-2 gap-3">
               {relationshipStages.map((stage) => (
@@ -180,7 +143,7 @@ export default function PersonalizePage() {
           </div>
 
           {/* Flirt Style - Main Selection */}
-          <div className="animate-slide-up" style={{ animationDelay: '400ms' }}>
+          <div className="animate-slide-up" style={{ animationDelay: '300ms' }}>
             <label className="block text-white/80 font-light mb-3">
               what's your vibe? <span className="text-neon-purple">(pick one)</span>
             </label>
@@ -212,7 +175,7 @@ export default function PersonalizePage() {
           </div>
 
           {/* Intensity Slider */}
-          <div className="animate-slide-up" style={{ animationDelay: '500ms' }}>
+          <div className="animate-slide-up" style={{ animationDelay: '400ms' }}>
             <div className="flex justify-between items-center mb-3">
               <label className="text-white/80 font-light">intensity level</label>
               <span className="text-neon-purple font-medium">{data.intensity}/10</span>

@@ -116,6 +116,14 @@ export default function ChatPage() {
       <div className="absolute bottom-40 right-10 w-80 h-80 bg-neon-purple rounded-full blur-[110px] opacity-20 animate-pulse-glow" />
 
       <div className="relative z-10 max-w-2xl mx-auto px-6 py-8">
+        {/* Back Button */}
+        <button
+          onClick={() => window.history.back()}
+          className="mb-6 text-white/60 hover:text-white transition-all duration-200 flex items-center gap-2 font-light"
+        >
+          <span>←</span> back to vibe check
+        </button>
+
         {/* Header */}
         <div className="text-center mb-10 animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-light mb-3">

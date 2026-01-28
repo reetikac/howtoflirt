@@ -4,7 +4,6 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 interface PersonalizationData {
   userGender: string | null;
-  userAge: string;
   relationshipStage: string | null;
   flirtStyle: string | null;
   intensity: number;
@@ -20,7 +19,6 @@ const PersonalizationContext = createContext<PersonalizationContextType | undefi
 export function PersonalizationProvider({ children }: { children: ReactNode }) {
   const [personalization, setPersonalization] = useState<PersonalizationData>({
     userGender: null,
-    userAge: '',
     relationshipStage: null,
     flirtStyle: null,
     intensity: 5,
