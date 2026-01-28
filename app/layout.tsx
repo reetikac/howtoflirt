@@ -18,8 +18,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Build timestamp to force cache invalidation
+  const buildTime = new Date().toISOString();
   return (
-    <html lang="en">
+    <html lang="en" data-build-time={buildTime} data-version="1.2.0">
       <body className="antialiased">
         <PersonalizationProvider>
           {children}
