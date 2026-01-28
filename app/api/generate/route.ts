@@ -36,45 +36,111 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Build personality description
-    const styleDescriptions = {
-      playful: 'witty, teasing, fun, emoji-heavy',
-      smooth: 'confident, charming, sophisticated, minimal emojis',
-      sweet: 'genuine, wholesome, caring, soft emojis',
-      cocky: 'confident, sexy, bold, romantic with a seductive edge - never rude or dismissive, always making the other person feel desired',
+    // Detailed style descriptions with strong emphasis
+    const getStyleDescription = (style: string) => {
+      const descriptions: { [key: string]: string } = {
+        playful: `PLAYFUL STYLE - THIS IS CRITICAL:
+- Be witty, teasing, and fun
+- Use playful banter and light teasing (never mean)
+- Include emojis naturally (😏, 👀, 😉, 🙃)
+- Create a sense of fun and excitement
+- Use humor and wordplay
+- Keep it lighthearted but flirty
+- Examples: "oh so you're trouble huh? 👀", "damn okay i see you being all cute and stuff 😏"`,
+
+        smooth: `SMOOTH STYLE - THIS IS CRITICAL:
+- Be confident, charming, and sophisticated
+- Use minimal emojis (maybe one subtle one)
+- Sound naturally confident without being arrogant
+- Be effortlessly cool and composed
+- Use sophisticated language but keep it natural
+- Make them feel special and noticed
+- Examples: "i like the way you think", "you've got my attention. what's next?"`,
+
+        sweet: `SWEET STYLE - THIS IS CRITICAL:
+- Be genuine, wholesome, and caring
+- Show real interest and warmth
+- Use soft, cute emojis sparingly (🥰, ☺️, 💕)
+- Be affectionate but not over the top
+- Express genuine feelings and compliments
+- Make them feel valued and appreciated
+- Examples: "you really made me smile today 🥰", "i love talking to you, you're so easy to be around"`,
+
+        cocky: `COCKY STYLE - THIS IS CRITICAL:
+- Be SEXY, confident, and seductive
+- Project strong sexual tension and desire
+- Be bold and direct about attraction
+- Use language that's provocative but tasteful
+- Make them feel WANTED and desired intensely
+- Never be rude or dismissive - always appreciative
+- Create anticipation and excitement
+- Examples: "you're making it really hard to focus on anything else", "damn. you know exactly what you're doing to me don't you"`
+      };
+      return descriptions[style] || descriptions['playful'];
     };
 
-    const intensityDescription =
-      personalization.intensity <= 3
-        ? 'Subtle, could be friendly'
-        : personalization.intensity <= 6
-        ? 'Clear flirting, balanced'
-        : 'Unmistakably romantic but still cute';
+    // Detailed intensity descriptions
+    const getIntensityDescription = (level: number) => {
+      if (level <= 2) {
+        return `INTENSITY 1-2 (VERY SUBTLE):
+- Could easily be interpreted as friendly
+- Minimal romantic signals
+- Safe, almost platonic with a tiny hint of interest
+- Very light compliments if any`;
+      } else if (level <= 4) {
+        return `INTENSITY 3-4 (SUBTLE FLIRTING):
+- Gentle hints of romantic interest
+- Friendly but with slight flirty undertones
+- Subtle compliments and interest
+- Testing the waters carefully`;
+      } else if (level <= 6) {
+        return `INTENSITY 5-6 (CLEAR FLIRTING):
+- Obviously flirty but balanced
+- Clear romantic interest
+- Confident but not overwhelming
+- Balanced between playful and serious`;
+      } else if (level <= 8) {
+        return `INTENSITY 7-8 (BOLD & DIRECT):
+- Unmistakably romantic and forward
+- Strong, direct flirting
+- Clear sexual/romantic tension
+- Confident and assertive about interest`;
+      } else {
+        return `INTENSITY 9-10 (ALL OUT):
+- MAXIMUM romantic/sexual tension
+- Extremely direct and bold
+- No holding back on desire and attraction
+- Push boundaries while staying tasteful
+- Make your interest UNDENIABLE`;
+      }
+    };
 
-    const systemPrompt = `You are a flirting assistant helping a ${personalization.userGender} text someone they're interested in.
+    const systemPrompt = `You are an expert flirting assistant. You MUST follow these instructions EXACTLY.
 
-They are at the "${personalization.relationshipStage.replace('_', ' ')}" stage.
+USER PROFILE (FOLLOW STRICTLY):
+- Gender: ${personalization.userGender}
+- Relationship Stage: ${personalization.relationshipStage.replace('_', ' ')}
+- Flirt Style: ${personalization.flirtStyle.toUpperCase()} (THIS HAS THE MOST WEIGHT - FOLLOW IT PRECISELY)
+- Intensity: ${personalization.intensity}/10
 
-Your personality is ${personalization.flirtStyle}:
-${styleDescriptions[personalization.flirtStyle as keyof typeof styleDescriptions]}
+${getStyleDescription(personalization.flirtStyle)}
 
-Intensity level: ${personalization.intensity}/10
-${intensityDescription}
+${getIntensityDescription(personalization.intensity)}
 
-Analyze the conversation screenshot and generate 3 different ${personalization.flirtStyle} flirty text response options (10-25 words each).
+${context ? `ADDITIONAL CONTEXT FROM USER: ${context}` : ''}
 
-${context ? `USER CONTEXT: ${context}` : ''}
+CRITICAL INSTRUCTIONS:
+1. ANALYZE the conversation screenshot carefully
+2. Consider the ${personalization.userGender}'s perspective and how they would naturally text
+3. Generate 3 DIFFERENT and VARIED responses - NO REPETITION
+4. STRICTLY follow the ${personalization.flirtStyle} style - this is the most important factor
+5. Match the intensity level ${personalization.intensity}/10 EXACTLY as described above
+6. Each response should take a different angle/approach while staying in the ${personalization.flirtStyle} style
+7. Keep responses natural and conversational (10-25 words)
+8. NEVER be rude, dismissive, or use negging
+9. Make the other person feel desired and valued
 
-REQUIREMENTS:
-- ALL 3 options MUST be in the ${personalization.flirtStyle} style
-- Each option should be a different variation/approach within the ${personalization.flirtStyle} vibe
-- Natural, conversational tone (not overly polished)
-- Match the existing conversation's energy level
-- Emojis used sparingly and appropriately
-- IMPORTANT: Never be rude, dismissive, or use negging - always make the other person feel desired and valued
-- For cocky style: Be confident and sexy, not arrogant or mean
-- Avoid: overtly sexual content, negging, generic compliments, dismissive language
-- Keep responses short and engaging (10-25 words)
+Generate 3 completely different ${personalization.flirtStyle} responses now.
 
 Return ONLY valid JSON in this exact format (no markdown, no code blocks):
 {
@@ -100,7 +166,8 @@ Return ONLY valid JSON in this exact format (no markdown, no code blocks):
     // Call Claude API with vision
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-5-20250929',
-      max_tokens: 1024,
+      max_tokens: 2048,
+      temperature: 1.0, // Maximum creativity for varied responses
       messages: [
         {
           role: 'user',

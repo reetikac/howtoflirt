@@ -25,10 +25,10 @@ const relationshipStages = [
 ];
 
 const flirtStyles = [
-  { value: 'playful', emoji: '🎮', title: 'playful', desc: 'witty, teasing, fun vibes' },
-  { value: 'smooth', emoji: '😎', title: 'smooth', desc: 'confident & sophisticated' },
-  { value: 'sweet', emoji: '🥰', title: 'sweet', desc: 'genuine & wholesome' },
-  { value: 'cocky', emoji: '🔥', title: 'cocky', desc: 'direct, spicy, bold' },
+  { value: 'playful', emoji: '🎮', title: 'playful', desc: 'witty, teasing, fun with lots of banter' },
+  { value: 'smooth', emoji: '😎', title: 'smooth', desc: 'effortlessly confident & charming' },
+  { value: 'sweet', emoji: '🥰', title: 'sweet', desc: 'genuine, warm & affectionate' },
+  { value: 'cocky', emoji: '🔥', title: 'cocky', desc: 'sexy, bold & seductive' },
 ];
 
 export default function PersonalizePage() {
@@ -230,8 +230,17 @@ export default function PersonalizePage() {
                 [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:hover:scale-110"
             />
             <div className="flex justify-between mt-2">
-              <span className="text-xs text-white/40 font-light">keep it subtle</span>
-              <span className="text-xs text-white/40 font-light">go all in</span>
+              <span className="text-xs text-white/40 font-light">subtle (1-2)</span>
+              <span className="text-xs text-white/40 font-light">all out (10)</span>
+            </div>
+            <div className="mt-3 text-center">
+              <p className="text-sm text-neon-purple font-light">
+                {data.intensity <= 2 && "very subtle - almost friendly"}
+                {data.intensity > 2 && data.intensity <= 4 && "gentle hints of interest"}
+                {data.intensity > 4 && data.intensity <= 6 && "clear flirting, balanced"}
+                {data.intensity > 6 && data.intensity <= 8 && "bold & direct"}
+                {data.intensity > 8 && "maximum romantic tension 🔥"}
+              </p>
             </div>
           </div>
         </div>
