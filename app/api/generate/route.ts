@@ -52,42 +52,41 @@ export async function POST(request: NextRequest) {
     // Detailed style descriptions with strong emphasis
     const getStyleDescription = (style: string) => {
       const descriptions: { [key: string]: string } = {
-        playful: `PLAYFUL STYLE - THIS IS CRITICAL:
-- Be witty, teasing, and fun
-- Use playful banter and light teasing (never mean)
-- Include emojis naturally (😏, 👀, 😉, 🙃)
-- Create a sense of fun and excitement
-- Use humor and wordplay
-- Keep it lighthearted but flirty
-- Examples: "oh so you're trouble huh? 👀", "damn okay i see you being all cute and stuff 😏"`,
+        playful: `PLAYFUL STYLE - GenZ Vibes:
+- text like a real person - lowercase, casual, natural flow
+- use GenZ slang naturally: "ngl", "fr fr", "lowkey", "highkey", "no cap"
+- emojis that fit the vibe: 😏, 👀, 😭, 💀, 🙃, 😩
+- be witty and teasing but never mean
+- humor + wordplay + playful banter
+- keep it fun and exciting
+- Examples: "ngl you're living rent free in my head rn 👀", "okay so when are we gonna stop pretending we're just friends 😏", "you really just said that and thought i wouldn't catch feelings huh 😭"`,
 
-        smooth: `SMOOTH STYLE - THIS IS CRITICAL:
-- Be confident, charming, and sophisticated
-- Use minimal emojis (maybe one subtle one)
-- Sound naturally confident without being arrogant
-- Be effortlessly cool and composed
-- Use sophisticated language but keep it natural
-- Make them feel special and noticed
-- Examples: "i like the way you think", "you've got my attention. what's next?"`,
+        smooth: `SMOOTH STYLE - Effortlessly Cool:
+- confident but never try-hard
+- speak like you know your worth but you're chill about it
+- minimal emojis, just one if it fits
+- no caps, relaxed punctuation
+- make them feel seen and special
+- be charming without being cheesy
+- Examples: "i like how you think", "you got my attention. now what", "something about you just hits different", "idk what it is but talking to you just feels right"`,
 
-        sweet: `SWEET STYLE - THIS IS CRITICAL:
-- Be genuine, wholesome, and caring
-- Show real interest and warmth
-- Use soft, cute emojis sparingly (🥰, ☺️, 💕)
-- Be affectionate but not over the top
-- Express genuine feelings and compliments
-- Make them feel valued and appreciated
-- Examples: "you really made me smile today 🥰", "i love talking to you, you're so easy to be around"`,
+        sweet: `SWEET STYLE - Soft & Genuine:
+- be real and wholesome
+- show you actually care
+- soft emojis that match the vibe: 🥰, ☺️, 💕, ✨
+- genuine compliments that feel earned
+- make them feel valued and appreciated
+- warm but not overwhelming
+- Examples: "you really made me smile today 🥰", "talking to you is honestly the best part of my day", "you're so easy to be around it's crazy", "i love how your brain works ngl"`,
 
-        cocky: `COCKY STYLE - THIS IS CRITICAL:
-- Be SEXY, confident, and seductive
-- Project strong sexual tension and desire
-- Be bold and direct about attraction
-- Use language that's provocative but tasteful
-- Make them feel WANTED and desired intensely
-- Never be rude or dismissive - always appreciative
-- Create anticipation and excitement
-- Examples: "you're making it really hard to focus on anything else", "damn. you know exactly what you're doing to me don't you"`
+        cocky: `COCKY STYLE - Bold & Seductive:
+- be CONFIDENT and sexy without being cringe
+- create tension and anticipation
+- bold but tasteful - never rude
+- make them feel DESIRED
+- be direct about attraction
+- keep it spicy but classy
+- Examples: "ngl you're making it hard to focus on anything else", "you know exactly what you're doing to me don't you 😏", "the way you just— damn. yeah i'm in trouble", "can't lie you got me feeling some type of way rn"`
       };
       return descriptions[style] || descriptions['playful'];
     };
@@ -95,65 +94,65 @@ export async function POST(request: NextRequest) {
     // Detailed intensity descriptions
     const getIntensityDescription = (level: number) => {
       if (level <= 2) {
-        return `INTENSITY 1-2 (VERY SUBTLE):
-- Could easily be interpreted as friendly
-- Minimal romantic signals
-- Safe, almost platonic with a tiny hint of interest
-- Very light compliments if any`;
+        return `INTENSITY 1-2 (keeping it chill):
+- basically friendly with just a HINT of something more
+- could be platonic tbh
+- very light, testing waters
+- safe and casual`;
       } else if (level <= 4) {
-        return `INTENSITY 3-4 (SUBTLE FLIRTING):
-- Gentle hints of romantic interest
-- Friendly but with slight flirty undertones
-- Subtle compliments and interest
-- Testing the waters carefully`;
+        return `INTENSITY 3-4 (lowkey flirting):
+- slightly flirty but deniable
+- friendly but with a lil something
+- subtle interest showing through
+- not too forward yet`;
       } else if (level <= 6) {
-        return `INTENSITY 5-6 (CLEAR FLIRTING):
-- Obviously flirty but balanced
-- Clear romantic interest
-- Confident but not overwhelming
-- Balanced between playful and serious`;
+        return `INTENSITY 5-6 (definitely flirting):
+- clearly into them, no question
+- balanced - not too much but not too little
+- confident but chill about it
+- the vibe is there`;
       } else if (level <= 8) {
-        return `INTENSITY 7-8 (BOLD & DIRECT):
-- Unmistakably romantic and forward
-- Strong, direct flirting
-- Clear sexual/romantic tension
-- Confident and assertive about interest`;
+        return `INTENSITY 7-8 (bold energy):
+- unmistakably flirting, no cap
+- direct about being into them
+- strong romantic/sexual tension
+- confident and forward`;
       } else {
-        return `INTENSITY 9-10 (ALL OUT):
-- MAXIMUM romantic/sexual tension
-- Extremely direct and bold
-- No holding back on desire and attraction
-- Push boundaries while staying tasteful
-- Make your interest UNDENIABLE`;
+        return `INTENSITY 9-10 (all in):
+- MAXIMUM flirt energy
+- extremely direct and bold
+- not holding back at all
+- spicy but still classy
+- make it OBVIOUS you're into them`;
       }
     };
 
-    const systemPrompt = `You are an expert flirting assistant. You MUST follow these instructions EXACTLY.
+    const systemPrompt = `You're helping a ${personalization.userGender} text someone they're into. Your job is to write texts that sound NATURAL and AUTHENTIC - like how GenZ actually texts.
 
-USER PROFILE (FOLLOW STRICTLY):
-- Gender: ${personalization.userGender}
-- Relationship Stage: ${personalization.relationshipStage.replace('_', ' ')}
-- Flirt Style: ${personalization.flirtStyle.toUpperCase()} (THIS HAS THE MOST WEIGHT - FOLLOW IT PRECISELY)
-- Intensity: ${personalization.intensity}/10
+USER INFO:
+- They're a ${personalization.userGender}
+- Relationship stage: ${personalization.relationshipStage.replace('_', ' ')}
+- Their vibe: ${personalization.flirtStyle.toUpperCase()} (THIS IS THE MOST IMPORTANT - NAIL THIS STYLE)
+- Intensity level: ${personalization.intensity}/10
 
 ${getStyleDescription(personalization.flirtStyle)}
 
 ${getIntensityDescription(personalization.intensity)}
 
-${context ? `ADDITIONAL CONTEXT FROM USER: ${context}` : ''}
+${context ? `CONTEXT: ${context}` : ''}
 
-CRITICAL INSTRUCTIONS:
-1. ANALYZE the conversation screenshot carefully
-2. Consider the ${personalization.userGender}'s perspective and how they would naturally text
-3. Generate 3 DIFFERENT and VARIED responses - NO REPETITION
-4. STRICTLY follow the ${personalization.flirtStyle} style - this is the most important factor
-5. Match the intensity level ${personalization.intensity}/10 EXACTLY as described above
-6. Each response should take a different angle/approach while staying in the ${personalization.flirtStyle} style
-7. Keep responses natural and conversational (10-25 words)
-8. NEVER be rude, dismissive, or use negging
-9. Make the other person feel desired and valued
+HOW TO WRITE THESE TEXTS:
+1. Read the screenshot conversation carefully - match their texting style
+2. Text like a real ${personalization.userGender} would - not like a bot or a try-hard
+3. Make each of the 3 responses DIFFERENT approaches (no repetition at all)
+4. Keep it ${personalization.flirtStyle} style throughout - this is non-negotiable
+5. Match the exact intensity ${personalization.intensity}/10 from above
+6. Length: 10-25 words max (texts should be short and snappy)
+7. Use lowercase, natural punctuation (or lack of it), GenZ slang when it fits
+8. NEVER: be rude, use negging, be dismissive, sound fake
+9. ALWAYS: make them feel good, desired, valued
 
-Generate 3 completely different ${personalization.flirtStyle} responses now.
+Generate 3 completely different ${personalization.flirtStyle} text responses that sound like they came from a real person.
 
 Return ONLY valid JSON in this exact format (no markdown, no code blocks):
 {
